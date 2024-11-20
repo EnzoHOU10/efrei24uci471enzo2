@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js Recipe Manager</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px;
+        }
+        h1 {
+            font-size: 1.8em;
+            color: #333;
+            text-align: center;
+        }
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            font-size: 1em;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="container">
+        <h1>Recipe Manager</h1>
+        <input v-model="query" placeholder="Search recipes...">
+        <button @click="searchRecipes">Search</button>
+
+        <div v-if="recipes.length">
+            <h2>Search Results</h2>
+            <div v-for="(recipe, index) in recipes" :key="recipe.id" class="recipe">
+                <h3>{{ recipe.title }}</h3>
+                <p>{{ recipe.summary.replace(/<[^>]*>/g, '') }}</p>
+                <button @click="addFavorite(recipe)">Add to Favorites</button>
+            </div>
+        </div>
+
+        <div class="favorites" v-if="favorites.length">
+            <h2>Favorite Recipes</h2>
+            <div v-for="(recipe, index) in favorites" :key="recipe.id" class="recipe">
+                <h3>{{ recipe.title }}</h3>
+                <p>{{ recipe.summary.replace(/<[^>]*>/g, '') }}</p>
+                <button @click="removeFavorite(index)">Remove from Favorites</button>
+            </div>
+        </div>
+
+        <p v-else-if="!recipes.length && query">No recipes found. Please try a different search term.</p>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                query: '',
+                recipes: [],
+                favorites: []
+            },
+            methods: {
+                searchRecipes() {
+                    if (this.query.trim() === '') return;
+
+                    const apiKey = 'YOUR_API_KEY'; // Replace with your Spoonacular API key
+                    const url = `https://api.spoonacular.com/recipes/complexSearch?query=${encodeURIComponent(this.query)}&number=5&apiKey=${apiKey}&addRecipeInformation=true`;
+
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            this.recipes = data.results || [];
+                        })
+                        .catch(error => {
+                            console.error('Error fetching recipes:', error);
+                            this.recipes = [];
+                        });
+                },
+                addFavorite(recipe) {
+                    if (!this.favorites.find(fav => fav.id === recipe.id)) {
+                        this.favorites.push(recipe);
+                    }
+                },
+                removeFavorite(index) {
+                    this.favorites.splice(index, 1);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

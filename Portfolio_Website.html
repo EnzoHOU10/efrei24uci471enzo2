@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js Portfolio</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px;
+        }
+        h1 {
+            font-size: 1.8em;
+            color: #333;
+            text-align: center;
+        }
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            font-size: 1em;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="container">
+        <nav>
+            <a href="#" @click.prevent="currentView = 'home'">Home</a>
+            <a href="#" @click.prevent="currentView = 'projects'">Projects</a>
+            <a href="#" @click.prevent="currentView = 'contact'">Contact</a>
+        </nav>
+        <component :is="currentView"></component>
+    </div>
+    <script>
+        Vue.component('home', {
+            template: `<div><h1>Welcome to My Portfolio</h1><p>This is a brief introduction about me.</p></div>`
+        });
+        Vue.component('projects', {
+            template: `<div><h1>My Projects</h1><p>UML, Computer, Web...</p></div>`
+        });
+        Vue.component('contact', {
+            template: `<div><h1>Contact Me</h1><p>Email:enzo@houssiere.com</p></div>`
+        });
+
+        new Vue({
+            el: '#app',
+            data: {
+                currentView: 'home'
+            }
+        });
+    </script>
+</body>
+</html>
